@@ -5,6 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from database.models import ActiveUser, AllUser
 
 
+
 async def orm_AddActiveUser(session: AsyncSession, data):
     obj = ActiveUser(
         user_id = data['user_id'],
@@ -37,10 +38,13 @@ async def orm_Change_RegStaus(session: AsyncSession, user_id: int, new_reg_statu
 
     await session.execute(query)
     await session.commit()
-
-async def orm_Check_avail_user(sesion: AsyncSession, user_id: int):
+async def orm_Check_avail_user(session: AsyncSession, user_id: int):
+    query = select(AllUser.id).where(AllUser.user_id == user_id)
+    result = await session.execute(query)
+    return result.scalar()
+async def orm_Check_register_user(session: AsyncSession, user_id: int):
     query = select(ActiveUser.name).where(ActiveUser.user_id == user_id)
-    result = await sesion.execute(query)
+    result = await session.execute(query)
     return result.scalar()
 async def orm_Get_info_user(session: AsyncSession, user_id:int):
     query = select(ActiveUser).where(ActiveUser.user_id == user_id)
