@@ -14,3 +14,12 @@ class RegistrationUser(StatesGroup):
     status_mentor = State()
     post_mentor = State()
     input_status_mentor = State()
+
+class EditProfile(StatesGroup):
+    edit_name = State()
+    edit_school = State()
+    edit_phone_number = State()
+    edite_mail = State()
+    edit_name_mentor = State()
+    edit_post_mentor = State()
+
