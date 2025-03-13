@@ -12,7 +12,7 @@ from app.bot.middlewares.db import DataBaseSession
 
 from app.bot.handlers.user_private import user_private_router
 from app.bot.common.bot_cmds_list import private
-
+from app.database.orm_query import orm_get_all_user
 # ALLOWED_UPDATES = ['message', 'callback_query']
 
 bot = Bot(token=settings.BOT_TOKEN)
@@ -26,13 +26,14 @@ async def on_startup(bot):
     await create_db()
 
 async def on_shutdown(bot):
-
+    await orm_get_all_user()
     print('Бот лег')
 
 async def main():
+    dp.update.middleware(DataBaseSession(session_pool=session_maker))
     dp.startup.register(on_startup)
     dp.shutdown.register(on_shutdown)
-    dp.update.middleware(DataBaseSession(session_pool=session_maker))
+
 
     await bot.delete_webhook(drop_pending_updates=True)
     # await bot.delete_my_commands(scope=BotCommandScopeAllPrivateChats())
