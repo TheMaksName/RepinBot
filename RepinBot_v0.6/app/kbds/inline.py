@@ -20,3 +20,14 @@ def get_callback_btns(
         for text, data in btns.items():
             keyboard.add(InlineKeyboardButton(text=text, callback_data=data))
         return keyboard.adjust(*sizes).as_markup()
+
+
+news_kbd = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [InlineKeyboardButton(text="Далее", callback_data='1'),
+        InlineKeyboardButton(text='Назад', callback_data='2'),
+         ],
+    ]
+)
+
+

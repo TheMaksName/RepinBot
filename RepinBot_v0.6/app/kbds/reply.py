@@ -1,7 +1,17 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
-start_kb = ReplyKeyboardMarkup(
+start_kb_not_prod = ReplyKeyboardMarkup(
+    keyboard=[
+        [KeyboardButton(text="Материалы"),
+        KeyboardButton(text="Посмотреть темы"),
+    ],
+    ],
+    resize_keyboard=True,
+    input_field_placeholder='Что вас интересует?'
+)
+
+start_kb_prod = ReplyKeyboardMarkup(
     keyboard=[
         [
         KeyboardButton(text="Зарегистрироваться"),
@@ -18,8 +28,12 @@ menu_kb = ReplyKeyboardMarkup (
     keyboard=[
         [
             KeyboardButton(text="Новости"),
-            KeyboardButton(text="Мой профиль")
+            KeyboardButton(text="Материалы"),
         ],
+        [
+            KeyboardButton(text="Выбрать тему"),
+            KeyboardButton(text="Мой профиль")
+        ]
     ],
     resize_keyboard=True,
     input_field_placeholder='Что вас интересует?'
@@ -29,9 +43,10 @@ admin_kb = ReplyKeyboardMarkup(
     keyboard=[
         [
             KeyboardButton(text="Создать новость"),
+            KeyboardButton(text="Редактировать новость")
         ],
         [
-            KeyboardButton(text="Редактировать новость")
+            KeyboardButton(text="Вернуться в обычный режим")
         ],
     ],
     resize_keyboard=True,

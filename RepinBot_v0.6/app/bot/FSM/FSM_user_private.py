@@ -29,3 +29,6 @@ class EditProfile(StatesGroup):
     confirm_changes = State()
     verify_mail = State()
 
+class ChoiceTheme(StatesGroup):
+    current_theme = State()
+    prev_message_id = State()

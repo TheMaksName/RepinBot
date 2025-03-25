@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class Settings:
+    PROD = False
     BOT_TOKEN: str = os.getenv("BOT_TOKEN")
     USER_ADMIN_NICK: str = os.getenv("ADMIN_USER_NICK")
     DATABASE_URL: str = os.getenv('DB_LITE')

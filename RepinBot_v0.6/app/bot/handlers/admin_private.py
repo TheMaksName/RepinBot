@@ -6,10 +6,13 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 
 from app.bot.FSM.FSM_admin_private import Admin_MainStates, AddNews
-from app.database.orm_query import orm_add_news
+from app.bot.FSM.FSM_user_private import User_MainStates
+from app.database.orm_query import orm_add_news, orm_add_admin
 from app.kbds.inline import get_callback_btns
 
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.kbds.reply import menu_kb, del_kbd, admin_kb
 
 admin_private_router = Router()
 
@@ -18,10 +21,23 @@ async def choice_action(message: Message, state: FSMContext):
     if message.text.lower() == "редактировать новость":
         await message.answer(text="Я пока не умею редактировать новости((")
     elif message.text.lower() == "создать новость":
-        await message.answer(text="Отлично! Новости это хорошо\nВведи заголовок новости")
+        await message.answer(text="Отлично! Новости это хорошо\nВведи заголовок новости", reply_markup=del_kbd)
         await state.set_state(AddNews.add_title)
+    elif message.text.lower() == 'вернуться в обычный режим':
+        await message.answer(text="Вы вернулсь в обычный режим", reply_markup=menu_kb)
+        await state.set_state(User_MainStates.after_registration)
+        await state.update_data({})
+    elif message.text.lower() == 'добавить админа':
+        await message.answer(text='Введите телеграм id нового админа', reply_markup=del_kbd)
+        await state.set_state(Admin_MainStates.add_admin)
     else:
         await message.answer(text="Не совсем вас понял")
+
+@admin_private_router.message(Admin_MainStates.add_admin)
+async def add_admin(message: Message,session: AsyncSession, state: FSMContext):
+    await orm_add_admin(session=session, user_id=message.text, username=None or 'не установлен')
+    await message.answer(text="Админ добавлен",reply_markup=admin_kb)
+    await state.set_state(Admin_MainStates.choice_action)
 
 @admin_private_router.message(AddNews.add_title, F.text)
 async def add_title(message: Message, state: FSMContext):
@@ -80,6 +96,7 @@ async def add_photo(message: Message, state: FSMContext):
 
 @admin_private_router.callback_query(AddNews.confirm_add, F.data == 'publicate')
 async def confirm_add_news(callback: CallbackQuery, state: FSMContext, session: AsyncSession):
-    await callback.message.answer(text="Новость успешно опубликована!")
+    await callback.message.answer(text="Новость успешно опубликована!", reply_markup=admin_kb)
+    await state.set_state(Admin_MainStates.choice_action)
     await orm_add_news(session=session, data=await state.get_data())
 
